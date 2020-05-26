@@ -69,6 +69,7 @@ src_palette_t src_palette[] = {
 	{ "RGB555" },
 	{ "Y16" },
 	{ "GREY" },
+	{ "SBGGR10" },
 	{ NULL }
 };
 
