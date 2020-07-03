@@ -50,7 +50,7 @@ int fswc_add_image_bayer(avgbmp_t *dst, uint8_t *img, uint32_t length, uint32_t 
 		uint8_t hn, vn, di;
 		uint8_t r, g, b;
 		int mode;
-		
+	
 		/* Setup pointers to this pixel's neighbours. */
 		p[0] = img - w - 1;
 		p[1] = img - w;

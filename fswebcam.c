@@ -620,12 +620,13 @@ int fswc_grab(fswebcam_config_t *config)
 	
 	/* If frames where skipped, inform when normal capture begins. */
 	if(config->skipframes) MSG("Capturing %i frames...", config->frames);
-	
+
 	/* Grab the requested number of frames. */
 	for(frame = 0; frame < config->frames; frame++)
 	{
+		printf("frame =%d\n",frame);
 		if(src_grab(&src) == -1) break;
-		
+
 		if(!frame && config->dumpframe)
 		{
 			/* Dump the raw data from the first frame to file. */
@@ -649,7 +650,8 @@ int fswc_grab(fswebcam_config_t *config)
 				if(f != stdout) fclose(f);
 			}
 		}
-		
+		 printf("start palette\n"); 
+		 printf("palette = %d\n",src.palette);
 		/* Add frame to the average bitmap. */
 		switch(src.palette)
 		{
@@ -709,7 +711,7 @@ int fswc_grab(fswebcam_config_t *config)
 			break;
 		}
 	}
-	
+	printf("end palette\n");	
 	/* We are now finished with the capture card. */
 	src_close(&src);
 	
