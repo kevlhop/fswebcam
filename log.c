@@ -147,17 +147,17 @@ void log_msg(char *file, char *function, int line, char l, char *s, ... )
 {
 	va_list ap;
 	char *msg, *o;
- 
+	
 	/* Is logging enabled? */
 	if(fd_log == -1) return;
-
+	
 	/* Is this message visible in the current mode? */
 	if(l == FLOG_MESSAGE && quiet) return;
 	if(l == FLOG_HEAD && quiet) return;
 	if(l == FLOG_INFO && !verbose) return;
 	if(l == FLOG_WARN && quiet) return;
 	if(l == FLOG_DEBUG && !verbose) return;
-
+	
 	/* Format the message. */
 	va_start(ap, s);
 	msg = vmake_message(s, ap);
@@ -176,7 +176,7 @@ void log_msg(char *file, char *function, int line, char l, char *s, ... )
 		free(msg);
 		return;
 	}
-
+	
 	/* Use text formatting if logging to stdout. */
 	if(fd_log == STDERR_FILENO && !use_syslog)
 	{

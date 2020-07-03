@@ -215,7 +215,7 @@ int src_grab(src_t *src)
 		
 		src->captured_frames++;
 	}
-	printf("src->captured_frames:%d\n",src->captured_frames);
+	
 	return(r);
 }
 
