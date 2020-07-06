@@ -709,6 +709,7 @@ int src_v4l2_set_mmap(src_t *src)
 		}
 		
 		s->buffer[b].length = buf.length;
+		printf("buf.length = %x\n",buf.length);
 		s->buffer[b].start = mmap(NULL, buf.length,
 		   PROT_READ | PROT_WRITE, MAP_SHARED, s->fd, buf.m.offset);
 		

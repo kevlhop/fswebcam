@@ -110,3 +110,127 @@ int fswc_add_image_bayer(avgbmp_t *dst, uint8_t *img, uint32_t length, uint32_t 
 	return(0);
 }
 
+static inline uint8_t clip(float v)
+{
+	if (v > 255.)
+		return 255;
+	else
+		return (uint8_t)v;
+}
+
+uint8_t interpol_r(void *raw_data, unsigned int width, unsigned int height, unsigned int x, unsigned int y)
+{
+	uint16_t *samples = raw_data;
+	float value;
+	float range_max = (1 << 10) - 1;
+	unsigned int xp, yp;
+	unsigned int xn, yn;
+
+	if ((x % 2 == 1) && (y % 2 == 1)) {
+		value = samples[y * width + x];
+		goto ret;
+	}
+
+	if (x < 2 || x >= (width - 1))
+		return 0;
+	if (y < 2 || y >= (height - 1))
+		return 0;
+
+	xp = (x - 2) | 1;
+	yp = (y - 2) | 1;
+
+	xn = x | 1;
+	yn = y | 1;
+
+	value = samples[yp * width + xp];
+
+ret:
+	return clip(255. * value / range_max);
+}
+
+uint8_t interpol_g(void *raw_data, unsigned int width, unsigned int height, unsigned int x, unsigned int y)
+{
+	uint16_t *samples = raw_data;
+	float value;
+	float range_max = (1 << 10) - 1;
+	unsigned int xp, yp;
+	unsigned int xn, yn;
+
+	if (((x % 2 == 1) && (y % 2 == 0)) || ((x % 2) == 0 && (y % 2 == 1))) {
+		value = samples[y * width + x];
+		goto ret;
+	}
+
+	if (x < 2 || x >= (width - 1))
+		return 0;
+	if (y < 2 || y >= (height - 1))
+		return 0;
+
+	xp = x - 1;
+	yp = y;
+
+	xn = x + 1;
+	yn = y;
+
+	value = samples[yp * width + xp];
+
+ret:
+	return clip(255. * value / range_max);
+}
+
+uint8_t interpol_b(void *raw_data, unsigned int width, unsigned int height, unsigned int x, unsigned int y)
+{
+	uint16_t *samples = raw_data;
+	float value;
+	float range_max = (1 << 10) - 1;
+	unsigned int xp, yp;
+	unsigned int xn, yn;
+
+	if (x % 2 == 0 && y % 2 == 0) {
+		value = samples[y * width + x];
+		goto ret;
+	}
+
+	if (x < 2 || x >= (width - 1))
+		return 0;
+	if (y < 2 || y >= (height - 1))
+		return 0;
+
+	xp = x & ~1;
+	yp = y & ~1;
+
+	xn = x & ~1;
+	yn = y & ~1;
+
+	value = samples[yp * width + xp];
+
+ret:
+	return clip(255. * value / range_max);
+}
+
+void fswc_add_image_10bitsbayer(void *raw_data, void *rgb_data, unsigned int width, unsigned int height)
+{
+	unsigned int x, y;
+	uint16_t *samples = raw_data;
+	uint16_t *pixels = rgb_data;
+	float range_max = (1 << 10) - 1;
+	uint8_t r = 0, g = 0, b = 0;
+
+	// BGGR
+	for (y = 0; y < height - 1; y++) {
+		for (x = 0; x < width; x++) {
+
+			r = interpol_r(raw_data, width, height, x, y);
+			g = interpol_g(raw_data, width, height, x, y);
+			b = interpol_b(raw_data, width, height, x, y);
+
+
+			*pixels++ = r;
+			*pixels++ = g;
+			*pixels++ = b;
+
+			samples++;
+		}
+	}
+}
+

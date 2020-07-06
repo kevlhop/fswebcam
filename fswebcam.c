@@ -681,8 +681,10 @@ int fswc_grab(fswebcam_config_t *config)
 		case SRC_PAL_SRGGB8:
 		case SRC_PAL_SGBRG8:
 		case SRC_PAL_SGRBG8:
-		case SRC_PAL_SBGGR10:
 			fswc_add_image_bayer(abitmap, src.img, src.length, src.width, src.height, src.palette);
+			break;
+		case SRC_PAL_SBGGR10:
+			fswc_add_image_10bitsbayer(src.img, abitmap, src.width, src.height);
 			break;
 		case SRC_PAL_YUYV:
 		case SRC_PAL_UYVY:
@@ -743,7 +745,7 @@ int fswc_grab(fswebcam_config_t *config)
 			colour  = (*(pbitmap++) / config->frames) << 16;
 			colour += (*(pbitmap++) / config->frames) << 8;
 			colour += (*(pbitmap++) / config->frames);
-			
+	
 			gdImageSetPixel(original, px, py, colour);
 		}
 	

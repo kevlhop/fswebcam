@@ -14,8 +14,9 @@
 #include "config.h"
 #endif
 
+extern int fswc_add_image_10bitsbayer(void *raw_data, void *rgb_data, unsigned
+				      int width, unsigned int height);
 extern int fswc_add_image_bayer(avgbmp_t *dst, uint8_t *img, uint32_t length, uint32_t w, uint32_t h, int palette);
-
 extern int fswc_add_image_y16(src_t *src, avgbmp_t *abitmap);
 extern int fswc_add_image_grey(src_t *src, avgbmp_t *abitmap);
 
